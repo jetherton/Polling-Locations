@@ -16,22 +16,22 @@
 
 <script type="text/javascript">
 
-var settings = <?=$settings?>;
+var polling_locations_settings = <?=$settings?>;
 
 
 
 jQuery(document).ready(function($) {
 			
-			$(settings.button_placement).append('<?=$button?>');
+			$(polling_locations_settings.button_placement).append('<?=$button?>');
 
-			$(settings.button_selector).on('click',function(){
+			$(polling_locations_settings.button_selector).on('click',function(){
 
-					var address_value = $(settings.address_selector).val(),
-						city_value = $(settings.city_selector).val(),
-						state_value = $(settings.state_selector).val(),
-						zip_value = $(settings.zip_selector).val(),
+					var address_value = $(polling_locations_settings.address_selector).val(),
+						city_value = $(polling_locations_settings.city_selector).val(),
+						state_value = $(polling_locations_settings.state_selector).val(),
+						zip_value = $(polling_locations_settings.zip_selector).val(),
 						full_address = address_value + " " + city_value + ", " + state_value + " " + zip_value,
-						url = "https://www.googleapis.com/civicinfo/us_v1/voterinfo/"+settings.election_id+"/lookup?officialOnly=false&fields=pollingLocations(address%2CendDate%2Cname%2Cnotes%2CpollingHours%2CstartDate%2CvoterServices)&key="+settings.api_key;
+						url = "https://www.googleapis.com/civicinfo/us_v1/voterinfo/"+polling_locations_settings.election_id+"/lookup?officialOnly=false&fields=pollingLocations(address%2CendDate%2Cname%2Cnotes%2CpollingHours%2CstartDate%2CvoterServices)&key="+polling_locations_settings.api_key;
 						
 
 
@@ -49,7 +49,7 @@ jQuery(document).ready(function($) {
 					   		var locations = "";
 					   		$(data.pollingLocations).each(function(index,location){
 
-					   			var html = "<div class='location'>\n";
+					   			var html = "<div class='polling_locations'>\n";
 					   			html += "<div class='locationName'>" +location.address.locationName + "</div>\n";
 					   			html += "<div class='line1'>" + location.address.line1 + "</div>\n"; 
 					   			html += "<div class='line2'>" + location.address.line2 + "</div>\n";
@@ -60,20 +60,20 @@ jQuery(document).ready(function($) {
 					   			locations += html;
 					   		});
 
-					   		$(settings.info_box_selector).html(locations);
+					   		$(polling_locations_settings.info_box_selector).html(locations);
 
 					   	}
 
 					   	else 
 					   	{
 
-					   		$(settings.info_box_selector).html("<div class='locationError'>"+settings.errorMessage+"</div>");
+					   		$(polling_locations_settings.info_box_selector).html("<div class='locationError'>"+polling_locations_settings.errorMessage+"</div>");
 
 					   	}
 					  },
 					  error: function(xhr, textStatus, errorThrown) {
 
-					    $(settings.info_box_selector).html("<div class='locationError'>"+settings.errorMessage+"</div>");
+					    $(polling_locations_settings.info_box_selector).html("<div class='locationError'>"+polling_locations_settings.errorMessage+"</div>");
 
 					  }
 					});
