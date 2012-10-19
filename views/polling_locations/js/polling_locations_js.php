@@ -47,10 +47,16 @@ jQuery(document).ready(function($) {
 					   	if(!$.isEmptyObject(data))
 					   	{
 					   		var locations = "";
+					   		
 					   		$(data.pollingLocations).each(function(index,location){
 
+					   			lastAddress = location.address.line1 + " " + location.address.line2 + " " + location.address.line3 + " " + location.address.city + ", " + location.address.state +" " + location.address.zip;
 					   			var html = "<div id='pollingLocation"+index+"' class='location'>\n";
-					   			html += "<div class='usePollingPlace'><a href=\"#\" onclick='geoCodePollingPlace(\"" + location.address.line1 + " " + location.address.line2 + " " + location.address.line3 + " " + location.address.city + ", " + location.address.state +" " + location.address.zip + "\", "+index+"); return false;'>Use Polling Place</a></div>";  
+					   			//if there's more than one polling place then give the user the option to pick one
+					   			if(data.pollingLocations.length > 1)
+					   			{
+						   			html += "<div class='usePollingPlace'><a href=\"#\" onclick='geoCodePollingPlace(\"" + location.address.line1 + " " + location.address.line2 + " " + location.address.line3 + " " + location.address.city + ", " + location.address.state +" " + location.address.zip + "\", "+index+"); return false;'>Use Polling Place</a></div>";
+					   			}  
 					   			html += "<div class='locationName'>" +location.address.locationName + "</div>\n";
 					   			html += "<div class='line1'>" + location.address.line1 + "</div>\n"; 
 					   			html += "<div class='line2'>" + location.address.line2 + "</div>\n";
@@ -59,22 +65,37 @@ jQuery(document).ready(function($) {
 					   			html += "<div class='hours'>Hours: "+location.pollingHours + "</div>\n";
 					   			html += "</div> \n";
 					   			locations += html;
+								//if there's just one polling place automatically geolocate it
+					   			if(data.pollingLocations.length == 1)
+					   			{
+						   			var address = location.address.line1 + " " + location.address.line2 + " " + location.address.line3 + " " + location.address.city + ", " + location.address.state +" " + location.address.zip;
+					   				$("#location_find").val(address);
+					   				geoCode(true);
+					   			}
 					   		});
 
 					   		$(settings.info_box_selector).show();
 					   		$(settings.info_box_selector).html(locations);
-
-					   	}
+						}
+					   	
+						   	
 
 					   	else 
 					   	{
-
-					   		$(settings.info_box_selector).html("<div class='locationError'>"+settings.errorMessage+"</div>");
+					   		$(settings.info_box_selector).show();
+					   		$(settings.info_box_selector).html("<div class='locationError'>Sorry, but no polling places where found for that address<br/>Use the map and search box below to manually locate the polling place as best you can.</div>");
+					   		$("#location_name_div").show();
+							$(".form-map").show();
+							if(map == null)
+							{
+								initMap();
+							
+							}		
 
 					   	}
 					  },
 					  error: function(xhr, textStatus, errorThrown) {
-
+						  $(settings.info_box_selector).show();
 					    $(settings.info_box_selector).html("<div class='locationError'>"+settings.errorMessage+"</div>");
 
 					  }
@@ -88,7 +109,7 @@ jQuery(document).ready(function($) {
 		function geoCodePollingPlace(address, index)
 		{
 			$("#location_find").val(address);
-			geoCode();
+			geoCode(true);
 			$("#pollingLocation" + index + " div.usePollingPlace").text('Selected');
 			$("#pollingLocation" + index + " div.usePollingPlace").addClass('alert-info');
 			$("#pollingLocation" + index + " div.usePollingPlace").removeClass('usePollingPlace');
