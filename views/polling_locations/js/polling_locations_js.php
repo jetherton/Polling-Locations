@@ -57,12 +57,22 @@ jQuery(document).ready(function($) {
 					   			{
 						   			html += "<div class='usePollingPlace'><a href=\"#\" onclick='geoCodePollingPlace(\"" + location.address.line1 + " " + location.address.line2 + " " + location.address.line3 + " " + location.address.city + ", " + location.address.state +" " + location.address.zip + "\", "+index+"); return false;'>Use Polling Place</a></div>";
 					   			}  
-					   			html += "<div class='locationName'>" +location.address.locationName + "</div>\n";
-					   			html += "<div class='line1'>" + location.address.line1 + "</div>\n"; 
-					   			html += "<div class='line2'>" + location.address.line2 + "</div>\n";
-					   			html += "<div class='line3'>" + location.address.line3 + "</div>\n";
+					   			if(location.address.locationName != undefined) {
+					   				html += "<div class='locationName'>" +location.address.locationName + "</div>\n";	
+					   			}
+					   			if(location.address.line1 != undefined) {
+					   				html += "<div class='line1'>" + location.address.line1 + "</div>\n"; 
+					   			}
+					   			if(location.address.line2 != undefined) {
+						   			html += "<div class='line2'>" + location.address.line2 + "</div>\n";
+						   		}
+					   			if(location.address.line3 != undefined) {
+						   			html += "<div class='line3'>" + location.address.line3 + "</div>\n";
+						   		}
 					   			html += "<div class='cityStateZip'>" + location.address.city + ", " + location.address.state +" " + location.address.zip +"</div>\n";
-					   			html += "<div class='hours'>Hours: "+location.pollingHours + "</div>\n";
+					   			if(location.pollingHours != undefined) {
+					   				html += "<div class='hours'>Hours: "+location.pollingHours + "</div>\n";
+					   			}
 					   			html += "</div> \n";
 					   			locations += html;
 								//if there's just one polling place automatically geolocate it
@@ -96,7 +106,7 @@ jQuery(document).ready(function($) {
 					  },
 					  error: function(xhr, textStatus, errorThrown) {
 						  $(settings.info_box_selector).show();
-					    $(settings.info_box_selector).html("<div class='locationError'>"+settings.errorMessage+"</div>");
+					    $(settings.info_box_selector).html("<div class='locationError'>"+settings.error_message+"</div>");
 
 					  }
 					});
