@@ -13,25 +13,24 @@
 * 
 */
 ?>
-
 <script type="text/javascript">
 
-var settings = <?=$settings?>;
+var polling_place_settings = <?=$settings?>;
 
 
 
 jQuery(document).ready(function($) {
-			
-			$(settings.button_placement).append('<?=$button?>');
 
-			$(settings.button_selector).on('click',function(){
+			$(polling_place_settings.button_placement).append('<?=$button?>');
 
-					var address_value = $(settings.address_selector).val(),
-						city_value = $(settings.city_selector).val(),
-						state_value = $(settings.state_selector).val(),
-						zip_value = $(settings.zip_selector).val(),
+			$(polling_place_settings.button_selector).on('click',function(){
+
+					var address_value = $(polling_place_settings.address_selector).val(),
+						city_value = $(polling_place_settings.city_selector).val(),
+						state_value = $(polling_place_settings.state_selector).val(),
+						zip_value = $(polling_place_settings.zip_selector).val(),
 						full_address = address_value + " " + city_value + ", " + state_value + " " + zip_value,
-						url = "https://www.googleapis.com/civicinfo/us_v1/voterinfo/"+settings.election_id+"/lookup?officialOnly=false&fields=pollingLocations(address%2CendDate%2Cname%2Cnotes%2CpollingHours%2CstartDate%2CvoterServices)&key="+settings.api_key;
+						url = "https://www.googleapis.com/civicinfo/us_v1/voterinfo/"+polling_place_settings.election_id+"/lookup?officialOnly=false&fields=pollingLocations(address%2CendDate%2Cname%2Cnotes%2CpollingHours%2CstartDate%2CvoterServices)&key="+polling_place_settings.api_key;
 						
 
 
@@ -84,16 +83,16 @@ jQuery(document).ready(function($) {
 					   			}
 					   		});
 
-					   		$(settings.info_box_selector).show();
-					   		$(settings.info_box_selector).html(locations);
+					   		$(polling_place_settings.info_box_selector).show();
+					   		$(polling_place_settings.info_box_selector).html(locations);
 						}
 					   	
 						   	
 
 					   	else 
 					   	{
-					   		$(settings.info_box_selector).show();
-					   		$(settings.info_box_selector).html("<div class='locationError'>Sorry, but no polling places where found for that address<br/>Use the map and search box below to manually locate the polling place as best you can.</div>");
+					   		$(polling_place_settings.info_box_selector).show();
+					   		$(polling_place_settings.info_box_selector).html("<div class='locationError'>Sorry, but no polling places where found for that address<br/>Use the map and search box below to manually locate the polling place as best you can.</div>");
 					   		$("#location_name_div").show();
 							$(".form-map").show();
 							if(map == null)
@@ -105,8 +104,8 @@ jQuery(document).ready(function($) {
 					   	}
 					  },
 					  error: function(xhr, textStatus, errorThrown) {
-						  $(settings.info_box_selector).show();
-					    $(settings.info_box_selector).html("<div class='locationError'>"+settings.error_message+"</div>");
+						  $(polling_place_settings.info_box_selector).show();
+					    $(polling_place_settings.info_box_selector).html("<div class='locationError'>"+polling_place_settings.error_message+"</div>");
 
 					  }
 					});
