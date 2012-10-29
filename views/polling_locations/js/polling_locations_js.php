@@ -17,6 +17,19 @@
 
 var polling_place_settings = <?=$settings?>;
 
+$.fn.equalHeights = function(px) {
+	$(this).each(function(){
+		var currentTallest = 0;
+		$(this).children().each(function(i){
+			if ($(this).height() > currentTallest) { currentTallest = $(this).height(); }
+		});
+		if (!px || !Number.prototype.pxToEm) currentTallest = currentTallest.pxToEm(); //use ems unless px is specified
+		// for ie6, set height since min-height isn't supported
+		if ($.browser.msie && $.browser.version == 6.0) { $(this).children().css({'height': currentTallest}); }
+		$(this).children().css({'min-height': currentTallest}); 
+	});
+	return this;
+};
 
 
 jQuery(document).ready(function($) {
@@ -49,14 +62,10 @@ jQuery(document).ready(function($) {
 					   		
 					   		$(data.pollingLocations).each(function(index,location){
 								
-								var locations = "";
-					   			lastAddress = location.address.line1 + " " + location.address.line2 + " " + location.address.line3 + " " + location.address.city + ", " + location.address.state +" " + location.address.zip;
+					   			var address = "";
+
 					   			var html = "<div id='pollingLocation"+index+"' class='location'>\n";
 					   			//if there's more than one polling place then give the user the option to pick one
-					   			if(data.pollingLocations.length > 1)
-					   			{
-						   			html += "<div class='usePollingPlace'><a href=\"#\" onclick='geoCodePollingPlace(\"" + location.address.line1 + " " + location.address.line2 + " " + location.address.line3 + " " + location.address.city + ", " + location.address.state +" " + location.address.zip + "\", "+index+"); return false;'>Use Polling Place</a></div>";
-					   			}  
 					   			if(location.address.locationName != undefined) {
 					   				html += "<div class='locationName'>" +location.address.locationName + "</div>\n";	
 					   			}
@@ -72,23 +81,62 @@ jQuery(document).ready(function($) {
 						   			html += "<div class='line3'>" + location.address.line3 + "</div>\n";
 									address += location.address.line3;
 						   		}
+					   			
 					   			html += "<div class='cityStateZip'>" + location.address.city + ", " + location.address.state +" " + location.address.zip +"</div>\n";
-								address += " " + location.address.city + ", " + location.address.state +" " + location.address.zip;
+								address += ", " + location.address.city + ", " + location.address.state +" " + location.address.zip;
+
+
 					   			if(location.pollingHours != undefined) {
 					   				html += "<div class='hours'>Hours: "+location.pollingHours + "</div>\n";
 					   			}
-					   			html += "</div> \n";
-					   			locations += html;
 								//if there's just one polling place automatically geolocate it
 					   			if(data.pollingLocations.length == 1)
 					   			{
 					   				$("#location_find").val(address);
 					   				geoCode(true);
 					   			}
+					   			// if not create radio buttons
+					   			else {
+					   				html += "<div class='geo_radio_buttons'><p>Use Polling Place</p><input type='radio' id='geo_yes_"+index+"' name='geo_on_"+index+"' data-address='"+address+"' data-index="+index+" class='geo_yes' /><label for='geo_yes'>Yes</label><input name='geo_on_"+index+"' type='radio' id='geo_no_"+index+"' checked='checked' class='geo_no' /><label for='geo_no'>No</label></div>";
+					   			}
+
+					   			html += "</div> \n";
+					   			locations += html;
 					   		});
 
+	
 					   		$(polling_place_settings.info_box_selector).show();
 					   		$(polling_place_settings.info_box_selector).html(locations);
+
+					   		$(".locations").equalHeights();
+					   		if(data.pollingLocations.length > 1) {
+
+								$(".geo_radio_buttons input[type='radio']").on('change',function(e){
+										
+									var radio = $(this);
+									var locations = $('.location');
+
+									if(radio.attr('class') === 'geo_yes') {
+										
+										var location = radio.parent().parent();
+
+										locations.hide();
+										location.show();
+
+										geoCodePollingPlace(radio.data('address'),radio.data('index'));
+									
+									}
+									else {
+									
+										locations.show();	
+										$("#location_find").val("");
+									}
+									
+
+								});
+							
+
+							}
 						}
 					   	
 						   	
@@ -123,9 +171,6 @@ jQuery(document).ready(function($) {
 		{
 			$("#location_find").val(address);
 			geoCode(true);
-			$("#pollingLocation" + index + " div.usePollingPlace").text('Selected');
-			$("#pollingLocation" + index + " div.usePollingPlace").addClass('alert-info');
-			$("#pollingLocation" + index + " div.usePollingPlace").removeClass('usePollingPlace');
 			return false;
 		}
 
