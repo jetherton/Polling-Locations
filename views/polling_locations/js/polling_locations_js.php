@@ -119,7 +119,7 @@ jQuery(document).ready(function($) {
 					   			}
 					   			// if not create radio buttons
 					   			else {
-					   				if(typeof data.state != 'undefined' && typeof data.state[2] != 'undefined' && data.state[2].local_jurisdiction != 'undefined' && data.state[2].local_jurisdiction.name != 'undefined') {
+					   				if(typeof data.state != 'undefined' && typeof data.state[0] != 'undefined' && data.state[0].local_jurisdiction != 'undefined' && data.state[0].local_jurisdiction.name != 'undefined') {
 					   					var sub_region = data.state[0].local_jurisdiction.name
 					   				}
 					   				else {
