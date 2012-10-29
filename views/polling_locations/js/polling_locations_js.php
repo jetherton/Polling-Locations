@@ -16,6 +16,28 @@
 <script type="text/javascript">
 
 var polling_place_settings = <?=$settings?>;
+$.fn.toEm = function(settings){
+	settings = jQuery.extend({
+		scope: 'body'
+	}, settings);
+	var that = parseInt(this[0],10),
+		scopeTest = jQuery('<div style="display: none; font-size: 1em; margin: 0; padding:0; height: auto; line-height: 1; border:0;">&nbsp;</div>').appendTo(settings.scope),
+		scopeVal = scopeTest.height();
+	scopeTest.remove();
+	return (that / scopeVal).toFixed(8) + 'em';
+};
+
+
+$.fn.toPx = function(settings){
+	settings = jQuery.extend({
+		scope: 'body'
+	}, settings);
+	var that = parseFloat(this[0]),
+		scopeTest = jQuery('<div style="display: none; font-size: 1em; margin: 0; padding:0; height: auto; line-height: 1; border:0;">&nbsp;</div>').appendTo(settings.scope),
+		scopeVal = scopeTest.height();
+	scopeTest.remove();
+	return Math.round(that * scopeVal) + 'px';
+};
 
 $.fn.equalHeights = function(px) {
 	$(this).each(function(){
@@ -23,7 +45,7 @@ $.fn.equalHeights = function(px) {
 		$(this).children().each(function(i){
 			if ($(this).height() > currentTallest) { currentTallest = $(this).height(); }
 		});
-		if (!px || !Number.prototype.pxToEm) currentTallest = currentTallest.pxToEm(); //use ems unless px is specified
+		  if (!px || !$.fn.toEm) currentTallest = $(currentTallest).toEm(); //use ems unless px is specified
 		// for ie6, set height since min-height isn't supported
 		if ($.browser.msie && $.browser.version == 6.0) { $(this).children().css({'height': currentTallest}); }
 		$(this).children().css({'min-height': currentTallest}); 
@@ -43,7 +65,7 @@ jQuery(document).ready(function($) {
 						state_value = $(polling_place_settings.state_selector).val(),
 						zip_value = $(polling_place_settings.zip_selector).val(),
 						full_address = address_value + " " + city_value + ", " + state_value + " " + zip_value,
-						url = "https://www.googleapis.com/civicinfo/us_v1/voterinfo/"+polling_place_settings.election_id+"/lookup?officialOnly=false&fields=pollingLocations(address%2CendDate%2Cname%2Cnotes%2CpollingHours%2CstartDate%2CvoterServices)&key="+polling_place_settings.api_key;
+						url = "https://www.googleapis.com/civicinfo/us_v1/voterinfo/"+polling_place_settings.election_id+"/lookup?officialOnly=false&fields=pollingLocations(address%2CendDate%2Cname%2CpollingHours%2CstartDate)%2Cstate%2Flocal_jurisdiction&key="+polling_place_settings.api_key;
 						
 
 
@@ -97,7 +119,17 @@ jQuery(document).ready(function($) {
 					   			}
 					   			// if not create radio buttons
 					   			else {
-					   				html += "<div class='geo_radio_buttons'><p>Use Polling Place</p><input type='radio' id='geo_yes_"+index+"' name='geo_on_"+index+"' data-address='"+address+"' data-index="+index+" class='geo_yes' /><label for='geo_yes'>Yes</label><input name='geo_on_"+index+"' type='radio' id='geo_no_"+index+"' checked='checked' class='geo_no' /><label for='geo_no'>No</label></div>";
+					   				if(typeof data.state != 'undefined' && typeof data.state[2] != 'undefined' && data.state[2].local_jurisdiction != 'undefined' && data.state[2].local_jurisdiction.name != 'undefined') {
+					   					var sub_region = data.state[0].local_jurisdiction.name
+					   				}
+					   				else {
+					   					var sub_region = address;
+					   				}
+					   				
+					   				html += "<div class='geo_radio_buttons'>\n<p>Use Polling Place</p>\n"
+					   				html += "<label for='geo_yes_"+index+"'><input type='radio' id='geo_yes_"+index+"' name='geo_on_"+index+"' data-address='"+address+"' data-index="+index+" data-sub_region='"+sub_region+"'class='geo_yes' />Yes</label>\n"
+					   				html += "<label for='geo_no_"+index+"'><input name='geo_on_"+index+"' type='radio' id='geo_no_"+index+"' checked='checked' class='geo_no' />No</label>\n"
+					   				html += "</div>";
 					   			}
 
 					   			html += "</div> \n";
@@ -108,7 +140,7 @@ jQuery(document).ready(function($) {
 					   		$(polling_place_settings.info_box_selector).show();
 					   		$(polling_place_settings.info_box_selector).html(locations);
 
-					   		$(".locations").equalHeights();
+					   		console.log($("#polling_places_results").equalHeights());
 					   		if(data.pollingLocations.length > 1) {
 
 								$(".geo_radio_buttons input[type='radio']").on('change',function(e){
@@ -118,12 +150,15 @@ jQuery(document).ready(function($) {
 
 									if(radio.attr('class') === 'geo_yes') {
 										
-										var location = radio.parent().parent();
+										var location = radio.parent().parent().parent();
 
 										locations.hide();
 										location.show();
 
 										geoCodePollingPlace(radio.data('address'),radio.data('index'));
+
+										$("#location_name").val(radio.data("sub_region"));
+								
 									
 									}
 									else {
