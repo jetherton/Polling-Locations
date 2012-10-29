@@ -48,7 +48,8 @@ jQuery(document).ready(function($) {
 					   		var locations = "";
 					   		
 					   		$(data.pollingLocations).each(function(index,location){
-
+								
+								var locations = "";
 					   			lastAddress = location.address.line1 + " " + location.address.line2 + " " + location.address.line3 + " " + location.address.city + ", " + location.address.state +" " + location.address.zip;
 					   			var html = "<div id='pollingLocation"+index+"' class='location'>\n";
 					   			//if there's more than one polling place then give the user the option to pick one
@@ -61,14 +62,18 @@ jQuery(document).ready(function($) {
 					   			}
 					   			if(location.address.line1 != undefined) {
 					   				html += "<div class='line1'>" + location.address.line1 + "</div>\n"; 
+									address += location.address.line1;
 					   			}
 					   			if(location.address.line2 != undefined) {
 						   			html += "<div class='line2'>" + location.address.line2 + "</div>\n";
+									address += location.address.line2;
 						   		}
 					   			if(location.address.line3 != undefined) {
 						   			html += "<div class='line3'>" + location.address.line3 + "</div>\n";
+									address += location.address.line3;
 						   		}
 					   			html += "<div class='cityStateZip'>" + location.address.city + ", " + location.address.state +" " + location.address.zip +"</div>\n";
+								address += " " + location.address.city + ", " + location.address.state +" " + location.address.zip;
 					   			if(location.pollingHours != undefined) {
 					   				html += "<div class='hours'>Hours: "+location.pollingHours + "</div>\n";
 					   			}
@@ -77,7 +82,6 @@ jQuery(document).ready(function($) {
 								//if there's just one polling place automatically geolocate it
 					   			if(data.pollingLocations.length == 1)
 					   			{
-						   			var address = location.address.line1 + " " + location.address.line2 + " " + location.address.line3 + " " + location.address.city + ", " + location.address.state +" " + location.address.zip;
 					   				$("#location_find").val(address);
 					   				geoCode(true);
 					   			}
