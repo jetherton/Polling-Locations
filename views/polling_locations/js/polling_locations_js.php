@@ -13,46 +13,10 @@
 * 
 */
 ?>
+
 <script type="text/javascript">
 
 var polling_place_settings = <?=$settings?>;
-$.fn.toEm = function(settings){
-	settings = jQuery.extend({
-		scope: 'body'
-	}, settings);
-	var that = parseInt(this[0],10),
-		scopeTest = jQuery('<div style="display: none; font-size: 1em; margin: 0; padding:0; height: auto; line-height: 1; border:0;">&nbsp;</div>').appendTo(settings.scope),
-		scopeVal = scopeTest.height();
-	scopeTest.remove();
-	return (that / scopeVal).toFixed(8) + 'em';
-};
-
-
-$.fn.toPx = function(settings){
-	settings = jQuery.extend({
-		scope: 'body'
-	}, settings);
-	var that = parseFloat(this[0]),
-		scopeTest = jQuery('<div style="display: none; font-size: 1em; margin: 0; padding:0; height: auto; line-height: 1; border:0;">&nbsp;</div>').appendTo(settings.scope),
-		scopeVal = scopeTest.height();
-	scopeTest.remove();
-	return Math.round(that * scopeVal) + 'px';
-};
-
-$.fn.equalHeights = function(px) {
-	$(this).each(function(){
-		var currentTallest = 0;
-		$(this).children().each(function(i){
-			if ($(this).height() > currentTallest) { currentTallest = $(this).height(); }
-		});
-		  if (!px || !$.fn.toEm) currentTallest = $(currentTallest).toEm(); //use ems unless px is specified
-		// for ie6, set height since min-height isn't supported
-		if ($.browser.msie && $.browser.version == 6.0) { $(this).children().css({'height': currentTallest}); }
-		$(this).children().css({'min-height': currentTallest}); 
-	});
-	return this;
-};
-
 
 jQuery(document).ready(function($) {
 
@@ -137,10 +101,9 @@ jQuery(document).ready(function($) {
 					   		});
 
 	
-					   		$(polling_place_settings.info_box_selector).show();
-					   		$(polling_place_settings.info_box_selector).html(locations);
+					   		
+					  		$(polling_place_settings.info_box_selector).show().html(locations);
 
-					   		console.log($("#polling_places_results").equalHeights());
 					   		if(data.pollingLocations.length > 1) {
 
 								$(".geo_radio_buttons input[type='radio']").on('change',function(e){
