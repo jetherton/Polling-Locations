@@ -78,6 +78,13 @@ jQuery(document).ready(function($) {
 					   			{
 					   				$("#location_find").val(address);
 					   				geoCode(true);
+
+					   				if(location.address.line1 != undefined)$("#custom_field_28").val(location.address.line1);
+					   				if(location.address.line2 != undefined)$("#custom_field_29").val(location.address.line2);
+					   				if(location.address.line3 != undefined)$("#custom_field_30").val(location.address.line3);
+					   				if(location.address.city != undefined)$("#custom_field_31").val(location.address.city);
+					   				if(location.address.state != undefined)$("#custom_field_32").val(location.address.state);
+									if(location.address.zip != undefined)$("#custom_field_33").val(location.address.zip);
 					   			}
 					   			// if not create radio buttons
 					   			else {
@@ -119,6 +126,15 @@ jQuery(document).ready(function($) {
 										geoCodePollingPlace(radio.data('address'),radio.data('index'));
 
 										$("#location_name").val(radio.data("sub_region"));
+
+
+										if(location.find(".line1").text() != undefined)$("#custom_field_28").val(location.find(".line1").text() );
+						   				if(location.find(".line2").text() != undefined)$("#custom_field_29").val(location.find(".line2").text() );
+						   				if(location.find(".line3").text() != undefined)$("#custom_field_30").val(location.find(".line3").text() );
+						   				if(location.find(".city").text() != undefined)$("#custom_field_31").val(location.find(".city").text() );
+						   				if(location.find(".state").text() != undefined)$("#custom_field_32").val(location.find(".state").text() );
+										if(location.find(".zip").text() != undefined)$("#custom_field_33").val(location.find(".zip").text() );
+								
 								
 									
 									}
