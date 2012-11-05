@@ -156,15 +156,7 @@ jQuery(document).ready(function($) {
 					   	else 
 					   	{
 					   		$(polling_place_settings.info_box_selector).show();
-					   		$(polling_place_settings.info_box_selector).html("<div class='locationError'>Sorry, but no polling places where found for that address<br/>Use the map and search box below to manually locate the polling place as best you can.</div>");
-					   		$("#location_name_div").show();
-							$(".form-map").show();
-							if(map == null)
-							{
-								initMap();
-							
-							}		
-
+					   		$(polling_place_settings.info_box_selector).html("<div class='locationError'>Sorry, but no polling places where found for that address<br/>Use the map and search box below to manually locate the polling place as best you can.</div>");					   		
 					   	}
 					  },
 					  error: function(xhr, textStatus, errorThrown) {
