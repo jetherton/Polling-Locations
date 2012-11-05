@@ -65,7 +65,7 @@ jQuery(document).ready(function($) {
 						   			html += "<div class='line3'>" + location.address.line3 + "</div>\n";
 						   		}
 					   			
-					   			html += "<div class='cityStateZip'>" + location.address.city + ", " + location.address.state +" " + location.address.zip +"</div>\n";
+					   			html += "<div class='cityStateZip'><span class='city'>" + location.address.city + "</span>, <span class='state'>" + location.address.state +"</span> <span class='zip'>" + location.address.zip +"</span></div>\n";
 								
 								address = location.address.zip;
 
