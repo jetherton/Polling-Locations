@@ -57,19 +57,17 @@ jQuery(document).ready(function($) {
 					   			}
 					   			if(location.address.line1 != undefined) {
 					   				html += "<div class='line1'>" + location.address.line1 + "</div>\n"; 
-									address += location.address.line1;
 					   			}
 					   			if(location.address.line2 != undefined) {
 						   			html += "<div class='line2'>" + location.address.line2 + "</div>\n";
-									address += location.address.line2;
 						   		}
 					   			if(location.address.line3 != undefined) {
 						   			html += "<div class='line3'>" + location.address.line3 + "</div>\n";
-									address += location.address.line3;
 						   		}
 					   			
 					   			html += "<div class='cityStateZip'>" + location.address.city + ", " + location.address.state +" " + location.address.zip +"</div>\n";
-								address += ", " + location.address.city + ", " + location.address.state +" " + location.address.zip;
+								
+								address = location.address.zip;
 
 
 					   			if(location.pollingHours != undefined) {
